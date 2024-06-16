@@ -20,9 +20,7 @@ Route::get('/', function () {
     return view('dashboardinicio');
 });
 
-Route::get('/panel', function () {
-    return view('panel.index');
-});
+Route::view('/panel','panel.index')->name('panel');
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
