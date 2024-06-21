@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DetalleVentaController;
@@ -21,6 +22,10 @@ Route::get('/', function () {
 });
 
 Route::view('/panel','panel.index')->name('panel');
+
+// Route::view('/categorias','categoria.index');
+Route::resource('categorias',CategoriaController::class);
+
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
