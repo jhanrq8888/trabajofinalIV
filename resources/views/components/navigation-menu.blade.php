@@ -51,14 +51,22 @@
                             </nav>
                         </div> -->
                         <div class="sb-sidenav-menu-heading">Modos</div>
+
                         <a class="nav-link" href="{{route('categorias.index')}}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-tag"></i></div>
-                            inventario
+                            Inventario
                         </a>
+
+                        <a class="nav-link" href="{{route('productos.index')}}">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-bag-shopping"></i></div>
+                            Productos
+                        </a>
+
                         <a class="nav-link" href="#">
                             <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                            otro 
+                            otro
                         </a>
+
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
 use Illuminate\Http\Request;
 
 class ProductoController extends Controller
@@ -11,7 +12,7 @@ class ProductoController extends Controller
      */
     public function index()
     {
-        //
+        return view('producto.index');
     }
 
     /**
@@ -19,7 +20,12 @@ class ProductoController extends Controller
      */
     public function create()
     {
-        //
+        $categorias = Categoria::join('caracteristicas as c', 'categorias.caracteristica_id', '=', 'c.id')
+            ->select('categorias.id as id', 'c.nombre as nombre')
+            ->where('c.estado', 1)
+            ->get();
+
+        return view('producto.create', compact('categorias'));
     }
 
     /**
