@@ -1,4 +1,4 @@
-@extends('template')
+@extends('dashboardinicio')
 
 @section('title', 'Productos')
 
