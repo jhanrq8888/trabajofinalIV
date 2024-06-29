@@ -23,7 +23,7 @@
         </ol>
 
         <div class="container w-100 border border-3 border-primary rounded p-4 mt-3">
-            <form action="{{ route('productos.store') }}" method="post">
+            <form action="{{ route('productos.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="row g-3">
 
@@ -56,29 +56,21 @@
                         @enderror
                     </div>
 
-                    <!---Precio---->
-                    {{-- <div class="col-12">
-                        <label for="precio" class="form-label">Precio:</label>
-                        <textarea name="precio" id="precio" rows="3" class="form-control">{{ old('precio') }}</textarea>
-                        @error('precio')
-                            <small class="text-danger">{{ '*' . $message }}</small>
-                        @enderror
-                    </div> --}}
-
-                    <div class="col-12">
-                        <label for="precio" class="form-label">Precio:</label>
-                        <input type="number" step="0.01" name="precio" id="precio" class="form-control" value="{{ old('precio') }}">
+                    <!----Precio---->
+                    <div class="col-md-6">
+                        <label for="precio" class="form-label">Precio</label>
+                        <input type="number" step="0.01" name="precio" id="precio" class="form-control"
+                            value="{{ old('precio') }}">
                         @error('precio')
                             <small class="text-danger">{{ '*' . $message }}</small>
                         @enderror
                     </div>
 
-
-
                     <!---Unidad---->
-                    <div class="col-12">
+                    <div class="col-md-6">
                         <label for="unidad" class="form-label">Unidad:</label>
-                        <textarea name="unidad" id="unidad" rows="3" class="form-control">{{ old('unidad') }}</textarea>
+                        <input type="unidad" name="unidad" id="unidad" class="form-control"
+                            value="{{ old('unidad') }}">
                         @error('unidad')
                             <small class="text-danger">{{ '*' . $message }}</small>
                         @enderror

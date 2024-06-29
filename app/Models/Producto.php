@@ -10,15 +10,7 @@ class Producto extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'nombre',
-        'descripcion',
-        'precio',
-        'stock',
-        'proveedor_id',
-        'codigo',
-        'unidad'
-    ];
+
 
     // public function compras()
     // {
@@ -37,7 +29,7 @@ class Producto extends Model
         return $this->belongsToMany(Categoria::class)->withTimestamps();
     }
 
-
+    protected $fillable=['codigo','nombre','descripcion','img_path'];
 
     public function handleUploadImage($image)
     {
@@ -48,4 +40,5 @@ class Producto extends Model
 
         return $name;
     }
+
 }
