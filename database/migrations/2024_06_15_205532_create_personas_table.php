@@ -11,17 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('productos', function (Blueprint $table) {
+        Schema::create('personas', function (Blueprint $table) {
             $table->id();
-            $table->string('codigo',50);
-            $table->string('nombre',80);
-            $table->integer('stock')->unsigned()->default(0);
-            $table->string('descripcion',255)->nullable();
-            $table->string('img_path',255)->nullable();
+            $table->string('razon_social',80);
+            $table->string('direccion',80);
+            $table->string('tipo_persona',20);
             $table->tinyInteger('estado')->default(1);
             $table->timestamps();
         });
-
     }
 
     /**
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('productos');
+        Schema::dropIfExists('personas');
     }
 };

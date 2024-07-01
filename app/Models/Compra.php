@@ -5,18 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Venta extends Model
+class Compra extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'fecha_hora',
+        'impuesto',
+        'numero_comprobante',
+        'total',
+        'comprobante_id',
+        'proveedore_id'
+    ];
 
-    public function cliente(){
-        return $this->belongsTo(Cliente::class);
-    }
-
-    public function user(){
-        return $this->belongsTo(User::class);
+    public function proveedore(){
+        return $this->belongsTo(Proveedor::class);
     }
 
     public function comprobante(){
@@ -25,6 +28,6 @@ class Venta extends Model
 
     public function productos(){
         return $this->belongsToMany(Producto::class)->withTimestamps()
-        ->withPivot('cantidad','precio_venta','descuento');
+        ->withPivot('cantidad','precio_compra','precio_venta');
     }
 }

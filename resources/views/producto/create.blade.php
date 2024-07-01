@@ -1,16 +1,16 @@
 @extends('dashboardinicio')
 
-@section('title', 'Productos')
+@section('title', 'Crear Productos')
 
 @push('css')
-<style>
-    #descripcion {
-        resize: none;
-    }
-</style>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <style>
+        #descripcion {
+            resize: none;
+        }
+    </style>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 @endpush
 
 @section('content')
@@ -22,10 +22,10 @@
             <li class="breadcrumb-item active">Crear producto</li>
         </ol>
 
-        <div class="container w-100 border border-3 border-primary rounded p-4 mt-3">
+        <div class="card">
             <form action="{{ route('productos.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
-                <div class="row g-3">
+                <div class="card-body text-bg-light">
 
                     <!----Codigo---->
                     <div class="col-md-6">
@@ -101,17 +101,19 @@
                         @enderror
                     </div>
 
-                    <div class="card-footer text-center">
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                    </div>
-
                 </div>
-            </form>
         </div>
+
+        <div class="card-footer text-center">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+        </form>
+    </div>
+
 
     </div>
 @endsection
 
 @push('js')
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
 @endpush

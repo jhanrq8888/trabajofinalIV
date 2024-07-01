@@ -3,20 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductoRequest;
+use App\Http\Requests\UpdateProductoRequest;
 use App\Models\Categoria;
 use App\Models\Producto;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductoController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:ver-producto|crear-producto|editar-producto|eliminar-producto', ['only' => ['index']]);
+        $this->middleware('permission:crear-producto', ['only' => ['create', 'store']]);
+        $this->middleware('permission:editar-producto', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:eliminar-producto', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('producto.index');
+        $productos = Producto::with(['categorias.caracteristica'])->latest()->get();
+
+        return view('producto.index', compact('productos'));
     }
 
     /**
@@ -29,8 +39,7 @@ class ProductoController extends Controller
             ->where('c.estado', 1)
             ->get();
 
-        return view('producto.create', compact('categorias'));
-
+        return view('producto.create', compact('marcas', 'presentaciones', 'categorias'));
     }
 
     /**
@@ -61,10 +70,12 @@ class ProductoController extends Controller
             $categorias = $request->get('categorias');
             $producto->categorias()->attach($categorias);
 
+
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
         }
+
         return redirect()->route('productos.index')->with('success', 'Producto registrado');
     }
 
@@ -80,17 +91,54 @@ class ProductoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Producto $id)
     {
-        //
+        $categorias = Categoria::join('caracteristicas as c', 'categorias.caracteristica_id', '=', 'c.id')
+            ->select('categorias.id as id', 'c.nombre as nombre')
+            ->where('c.estado', 1)
+            ->get();
+
+        return view('producto.edit', compact('producto', 'categorias'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateProductoRequest $request, Producto $producto)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            if ($request->hasFile('img_path')) {
+                $name = $producto->handleUploadImage($request->file('img_path'));
+
+                //Eliminar si existiese una imagen
+                if (Storage::disk('public')->exists('productos/' . $producto->img_path)) {
+                    Storage::disk('public')->delete('productos/' . $producto->img_path);
+                }
+            } else {
+                $name = $producto->img_path;
+            }
+
+            $producto->fill([
+                'codigo' => $request->codigo,
+                'nombre' => $request->nombre,
+                'descripcion' => $request->descripcion,
+                'img_path' => $name,
+            ]);
+
+            $producto->save();
+
+            //Tabla categoría producto
+            $categorias = $request->get('categorias');
+            $producto->categorias()->sync($categorias);
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
+
+        return redirect()->route('productos.index')->with('success', 'Producto editado');
     }
 
     /**
@@ -98,7 +146,22 @@ class ProductoController extends Controller
      */
     public function destroy(string $id)
     {
-        //
-    }
+        $message = '';
+        $producto = Producto::find($id);
+        if ($producto->estado == 1) {
+            Producto::where('id', $producto->id)
+                ->update([
+                    'estado' => 0
+                ]);
+            $message = 'Producto eliminado';
+        } else {
+            Producto::where('id', $producto->id)
+                ->update([
+                    'estado' => 1
+                ]);
+            $message = 'Producto restaurado';
+        }
 
+        return redirect()->route('productos.index')->with('success', $message);
+    }
 }
