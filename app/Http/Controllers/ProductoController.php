@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProductoRequest;
 use App\Http\Requests\UpdateProductoRequest;
 use App\Models\Categoria;
+use App\Models\Marca;
+use App\Models\Presentacione;
 use App\Models\Producto;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -24,9 +26,9 @@ class ProductoController extends Controller
      */
     public function index()
     {
-        $productos = Producto::with(['categorias.caracteristica'])->latest()->get();
+        $productos = Producto::with(['categorias.caracteristica','marca.caracteristica','presentacione.caracteristica'])->latest()->get();
 
-        return view('producto.index', compact('productos'));
+        return view('producto.index',compact('productos'));
     }
 
     /**
@@ -34,6 +36,7 @@ class ProductoController extends Controller
      */
     public function create()
     {
+
         $categorias = Categoria::join('caracteristicas as c', 'categorias.caracteristica_id', '=', 'c.id')
             ->select('categorias.id as id', 'c.nombre as nombre')
             ->where('c.estado', 1)
@@ -47,6 +50,7 @@ class ProductoController extends Controller
      */
     public function store(StoreProductoRequest $request)
     {
+        //dd($request);
         try {
             DB::beginTransaction();
             //Tabla producto
@@ -82,7 +86,6 @@ class ProductoController extends Controller
     /**
      * Display the specified resource.
      */
-
     public function show(string $id)
     {
         //
@@ -91,14 +94,15 @@ class ProductoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Producto $id)
+    public function edit(Producto $producto)
     {
+
         $categorias = Categoria::join('caracteristicas as c', 'categorias.caracteristica_id', '=', 'c.id')
             ->select('categorias.id as id', 'c.nombre as nombre')
             ->where('c.estado', 1)
             ->get();
 
-        return view('producto.edit', compact('producto', 'categorias'));
+        return view('producto.edit',compact('producto','marcas','presentaciones','categorias'));
     }
 
     /**
@@ -106,16 +110,17 @@ class ProductoController extends Controller
      */
     public function update(UpdateProductoRequest $request, Producto $producto)
     {
-        try {
+        try{
             DB::beginTransaction();
 
             if ($request->hasFile('img_path')) {
                 $name = $producto->handleUploadImage($request->file('img_path'));
 
                 //Eliminar si existiese una imagen
-                if (Storage::disk('public')->exists('productos/' . $producto->img_path)) {
-                    Storage::disk('public')->delete('productos/' . $producto->img_path);
+                if(Storage::disk('public')->exists('productos/'.$producto->img_path)){
+                    Storage::disk('public')->delete('productos/'.$producto->img_path);
                 }
+
             } else {
                 $name = $producto->img_path;
             }
@@ -134,11 +139,11 @@ class ProductoController extends Controller
             $producto->categorias()->sync($categorias);
 
             DB::commit();
-        } catch (Exception $e) {
+        }catch(Exception $e){
             DB::rollBack();
         }
 
-        return redirect()->route('productos.index')->with('success', 'Producto editado');
+        return redirect()->route('productos.index')->with('success','Producto editado');
     }
 
     /**

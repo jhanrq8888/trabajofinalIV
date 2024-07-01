@@ -56,26 +56,6 @@
                         @enderror
                     </div>
 
-                    <!----Precio---->
-                    <div class="col-md-6">
-                        <label for="precio" class="form-label">Precio</label>
-                        <input type="number" step="0.01" name="precio" id="precio" class="form-control"
-                            value="{{ old('precio') }}">
-                        @error('precio')
-                            <small class="text-danger">{{ '*' . $message }}</small>
-                        @enderror
-                    </div>
-
-                    <!---Unidad---->
-                    <div class="col-md-6">
-                        <label for="unidad" class="form-label">Unidad:</label>
-                        <input type="unidad" name="unidad" id="unidad" class="form-control"
-                            value="{{ old('unidad') }}">
-                        @error('unidad')
-                            <small class="text-danger">{{ '*' . $message }}</small>
-                        @enderror
-                    </div>
-
                     <!---Imagen---->
                     <div class="col-md-6">
                         <label for="img_path" class="form-label">Imagen:</label>
