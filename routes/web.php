@@ -1,50 +1,57 @@
 <?php
 
-use App\Http\Controllers\CategoriaController;
-use App\Http\Controllers\ClienteController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\DetalleVentaController;
-use App\Http\Controllers\EmpleadoController;
-use App\Http\Controllers\InventarioController;
-use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\categoriaController;
+use App\Http\Controllers\clienteController;
+use App\Http\Controllers\compraController;
+use App\Http\Controllers\homeController;
+use App\Http\Controllers\loginController;
+use App\Http\Controllers\logoutController;
+use App\Http\Controllers\marcaController;
+use App\Http\Controllers\presentacioneController;
 use App\Http\Controllers\ProductoController;
-use App\Http\Controllers\ProveedorController;
-use App\Http\Controllers\UsuarioController;
-use App\Http\Controllers\VentaController;
+use App\Http\Controllers\profileController;
+use App\Http\Controllers\proveedorController;
+use App\Http\Controllers\roleController;
+use App\Http\Controllers\userController;
+use App\Http\Controllers\ventaController;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+Route::get('/',[homeController::class,'index'])->name('panel');
 
-Route::get('/', function () {
-    return view('dashboardinicio');
+Route::resources([
+    'categorias' => categoriaController::class,
+    'presentaciones' => presentacioneController::class,
+    'marcas' => marcaController::class,
+    'productos' => ProductoController::class,
+    'clientes' => clienteController::class,
+    'proveedores' => proveedorController::class,
+    'compras' => compraController::class,
+    'ventas' => ventaController::class,
+    'users' => userController::class,
+    'roles' => roleController::class,
+    'profile' => profileController::class
+]);
+
+Route::get('/login',[loginController::class,'index'])->name('login');
+Route::post('/login',[loginController::class,'login']);
+Route::get('/logout',[logoutController::class,'logout'])->name('logout');
+
+Route::get('/401', function () {
+    return view('pages.401');
 });
-
-Route::view('/panel','panel.index')->name('panel');
-
-// Route::view('/categorias','categoria.index');
-Route::resource('categorias',CategoriaController::class);
-
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    Route::resource('clientes', ClienteController::class);
-    Route::resource('empleados', EmpleadoController::class);
-    Route::resource('proveedores', ProveedorController::class);
-    Route::resource('productos', ProductoController::class);
-    Route::resource('pedidos', PedidoController::class);
-    Route::resource('ventas', VentaController::class);
-    Route::resource('usuarios', UsuarioController::class);
-    Route::resource('inventarios', InventarioController::class);
-    Route::resource('detalle-ventas', DetalleVentaController::class);
+Route::get('/404', function () {
+    return view('pages.404');
 });
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+Route::get('/500', function () {
+    return view('pages.500');
 });
